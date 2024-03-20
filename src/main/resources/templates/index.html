@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <title>Inicio</title>
+        <meta charset="UTF-8" />
+    </head>
+    <body>
+        <h1>Inicio</h1>
+        <div>
+            <form method="POST" th:action="@{/logout}">
+                <a href="#" onclick="this.parentNode.submit();">Logout</a>
+            </form>
+        </div>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/agregar}">Crear Persona</a>
+        <div th:if="${personas != null and !personas.empty}">
+            <table border="1">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th sec:authorize="hasRole('ADMIN')">Editar</th>
+                    <th sec:authorize="hasRole('ADMIN')">Eliminar</th>
+                </tr>
+                <tr th:each="persona : ${personas}">
+                    <td th:text="${persona.nombre}">Mostrar Nombre</td>
+                    <td th:text="${persona.apellido}">Mostrar Apellido</td>
+                    <td th:text="${persona.email}">Mostrar Email</td>
+                    <td th:text="${persona.telefono}">Mostrar Teléfono</td>
+                    <td sec:authorize="hasRole('ADMIN')"><a th:href="@{/editar/} + ${persona.id}" th:text="Editar"/></td>
+                    <td sec:authorize="hasRole('ADMIN')"><a th:href="@{/eliminar(idPersona=${persona.id})}" th:text="Eliminar"/></td>
+                </tr>
+            </table>
+        </div>
+        <div th:if="${personas == null or personas.empty}">
+            La lista de personas está vacía
+        </div>
+        
+        <footer>
+            <p>User: <b><span sec:authentication="name">Usuario que hizo Login</span></b></p>
+            <p>Roles: <b><span sec:authentication="principal.authorities">Roles</span></b></p>
+        </footer>
+        
+    </body>
+</html>
